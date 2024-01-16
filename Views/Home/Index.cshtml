@@ -1,0 +1,62 @@
+﻿@model RuRuServer.Models.DataModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-5">Notification service test</h1>
+
+</div>
+<div class="row">
+    <div class="col-2">
+    </div>
+    <div class="col-8 py-5 border rounded">
+
+        <form class="g-3" method="POST" asp-controller="Home" asp-action="Index">
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="floatingInput" name="url" placeholder="Enter url" value="@Model.Url">
+                <label for="floatingInput">Url address</label>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Select state reason:</label>
+                <select class="form-select" name="stateReason" value="@Model.StateReason">
+                    <option value="0">SubscriptionCreated</option>
+                    <option value="1">PaymentInProgress</option>
+                    <option value="2">PaymentCompleted</option>
+                    <option value="3">FundsNotWithdrawn</option>
+                    <option value="4">NumAttemptExceeded</option>
+                    <option value="5">SubscriptionExpired</option>
+                    <option value="6">CanceledByPartner</option>
+                    <option value="7">CanceledByAdmin</option>
+                    <option value="8">UserOperatorChanged</option>
+                    <option value="9">FirstPaymentFailed</option>
+                    <option value="10">FatalPaymentError</option>
+                    <option value="11">SubscriptionExtended</option>
+                    <option value="12">ExpiredAndExtended</option>
+                    <option value="13">BindingRejected</option>
+                    <option value="14">CanceledByUserUSSD</option>
+                    <option value="15">CanceledByUserSMS</option>
+                    <option value="16">CreatedConfirmationAwait</option>
+                    <option value="17">SubscriptionUnconfirmed</option>
+                    <option value="18">NumAttemptPayoutExceeded</option>
+                    <option value="19">FirstPaymentFailedNoFunds</option>
+                    <option value="20">CanceledAfterPeriod</option>
+                </select>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+        </form>
+
+
+        <div class="my-3">
+            <label for="Output" class="form-label">Response:</label>
+            @Html.TextAreaFor(m => m.Output, 3, 40, new { @class = "form-control" })
+        </div>
+
+    </div>
+    <div class="col-2">
+    </div>
+</div>
