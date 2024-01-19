@@ -30,7 +30,7 @@ namespace RuRuServer.Models
 
 
         [JsonProperty("state_reason")]
-        public StateReason StateReason { get; set; }
+        public int StateReason { get; set; }
 
 
         [JsonProperty("state_updated")]

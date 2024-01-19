@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RuRuServer.Models;
+using System;
 using System.Diagnostics;
 
 namespace RuRuServer.Controllers
@@ -7,7 +8,7 @@ namespace RuRuServer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
+        private Random random = new Random();
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -16,7 +17,7 @@ namespace RuRuServer.Controllers
         public IActionResult Index()
         {
             DataModel model = new DataModel();
-            
+            model.SubscriptionId = random.Next(1000000).ToString();
             return View(model);
         }
 

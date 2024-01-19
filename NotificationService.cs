@@ -12,14 +12,14 @@ namespace RuRuServer
         {
             var notification = new Notification
             {
-                Id = random.Next(1000000).ToString(),
+                Id = model.SubscriptionId,
                 Period = new Period
                 {
                     From = new DateTime(2022, 01, 24, 16, 07, 02),
                     To = new DateTime(2022, 06, 28, 16, 06, 17)
                 },
                 State = 1,
-                StateReason = (StateReason)model.StateReason,
+                StateReason = model.SelectedStateReason,
                 StateUpdated = DateTime.Now,
                 ProlongationNumber = 1,
                 PaymentNumber = 8,
