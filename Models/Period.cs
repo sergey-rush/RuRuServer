@@ -11,12 +11,12 @@ namespace RuRuServer.Models
         /// Дата и время начала периода
         /// </summary>
         [JsonProperty("from")]
-        public DateTime From { get; set; }
+        public string? From { get; set; }
 
         /// <summary>
         /// Дата и время окончания периода
         /// </summary>
         [JsonProperty("to")]
-        public DateTime To { get; set; }
+        public string? To { get; set; }
     }
 }

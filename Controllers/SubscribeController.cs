@@ -5,7 +5,7 @@ using RuRuServer.Models;
 
 namespace RuRuServer.Controllers
 {
-    [Route("Subscribe")]
+    //[Route("Subscribe")]
     [ApiController]
     public class SubscribeController : ControllerBase
     {

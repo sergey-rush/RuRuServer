@@ -13,19 +13,21 @@ namespace RuRuServer
             var notification = new Notification
             {
                 Id = model.SubscriptionId,
+                AccountId = "8346346383610234",
+                Phone = model.Phone,
                 Period = new Period
                 {
-                    From = new DateTime(2022, 01, 24, 16, 07, 02),
-                    To = new DateTime(2022, 06, 28, 16, 06, 17)
+                    From = new DateTime(2024, 01, 03, 16, 07, 02).ToString("O"),
+                    To = new DateTime(2024, 06, 28, 11, 06, 17).ToString("O")
                 },
                 State = 1,
                 StateReason = model.SelectedStateReason,
                 StateUpdated = DateTime.Now,
                 ProlongationNumber = 1,
                 PaymentNumber = 8,
-                PaymentSucceeded = new DateTime(2023, 01, 24, 16, 07, 02),
-                TotalPaymentAmount = 720.0000F,
-                TransactionId = "505206097",
+                PaymentSucceeded = DateTime.Now,
+                TotalPaymentAmount = random.Next(1000),
+                TransactionId = random.Next(1000000).ToString(),
                 TransactionError = "0",
                 Signature = "yUPIpsAQusBdleRfMSho2Nnt9dsJV/kn6cn6rLpno9I="
             };
