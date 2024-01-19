@@ -10,7 +10,7 @@ namespace RuRuServer.Models
 
         public int SelectedStateReason { get; set; }
         public string Url { get; set; } = "http://localhost:8020/WebHandlers/RuRu2/Notifications/SubscriptionNotificationHandler.ashx";
-
+        public string Phone { get; set; }
         public string Output { get; set; }
     }
 }

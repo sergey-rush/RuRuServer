@@ -22,16 +22,20 @@
                 <small class="form-text text-muted">Укажите SubscriptionId (обязательное поле)</small>
             </div>
 
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" name="url" placeholder="Enter url" value="@Model.Phone">
+                <label>Msisdn (phone):</label>
+            </div>
+            
             <div class="mb-3">
                 <label class="form-label">Select state reason:</label>
                 <select asp-for="@Model.SelectedStateReason" asp-items="@Model.StateReasons" class="form-control"></select>
             </div>
-
+            
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="floatingInput" name="url" placeholder="Enter url" value="@Model.Url">
-                <label for="floatingInput">Url address</label>
+                <input type="text" class="form-control" name="url" placeholder="Enter url" value="@Model.Url">
+                <label>Url address</label>
             </div>
-
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button class="btn btn-primary" type="submit">Submit</button>

@@ -17,6 +17,7 @@ namespace RuRuServer.Controllers
         public IActionResult Index()
         {
             DataModel model = new DataModel();
+            model.Phone = "9267026528";
             model.SubscriptionId = random.Next(1000000).ToString();
             return View(model);
         }
