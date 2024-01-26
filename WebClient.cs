@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using RuRuServer.Base;
 using RuRuServer.Models;
 using System.Net;
 
@@ -14,10 +15,8 @@ public class WebClient
     }
 
 
-    public string ProcessRequest(Notification notification)
+    public DataModel ProcessRequest(DataModel model)
     {
-        string stringResponse = null;
-
         try
         {
             var request = WebRequest.Create(url);
@@ -25,10 +24,8 @@ public class WebClient
             request.ContentType = "application/json";
             using (var sw = new StreamWriter(request.GetRequestStream()))
             {
-                var json = JsonConvert.SerializeObject(notification);
-                sw.Write(json);
+                sw.Write(model.Input);
             }
-            
 
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
@@ -36,25 +33,25 @@ public class WebClient
 
                 using (var streamReader = new StreamReader(stream))
                 {
-                    stringResponse = streamReader.ReadToEnd();
+                    model.Output = streamReader.ReadToEnd();
                 }
             }
 
-            if (string.IsNullOrEmpty(stringResponse))
+            if (string.IsNullOrEmpty(model.Output))
             {
                 Console.WriteLine("Response is NULL");
             }
             else
             {
-                Console.WriteLine("Response: {0}", stringResponse);
+                Console.WriteLine("Response: {0}", model.Output);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            stringResponse = ex.Message;
+            model.Output = ex.Message;
         }
 
-        return stringResponse;
+        return model;
     }
 }

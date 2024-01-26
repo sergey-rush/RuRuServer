@@ -3,7 +3,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center mb-5">
+<div class="text-center mb-2">
     <h1 class="display-5">Notification service test</h1>
 
 </div>
@@ -14,34 +14,68 @@
 
         <form class="g-3" method="POST" asp-controller="Home" asp-action="Index">
 
-            <div class="mb-3">
-                <div class="form-floating">
-                    <input asp-for="@Model.SubscriptionId" class="form-control" placeholder="SubscriptionId">
-                    <label>SubscriptionId:</label>
+            <div class="row mb-2">
+                <div class="col-4">
+                    <div class="form-floating">
+                        <input asp-for="@Model.Amount" class="form-control" placeholder="Amount">
+                        <label>Total payment amount:</label>
+                    </div>
+                    <small class="form-text text-muted">Общая сумма платежей по подписке</small>
                 </div>
-                <small class="form-text text-muted">Укажите SubscriptionId (обязательное поле)</small>
+
+                <div class="col-4">
+                    <div class="form-floating">
+                        <input asp-for="@Model.SubscriptionId" class="form-control" placeholder="SubscriptionId">
+                        <label>SubscriptionId:</label>
+                    </div>
+                    <small class="form-text text-muted">SubscriptionId (required)</small>
+                </div>
+                <div class="col-4">
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" name="Phone" placeholder="Enter url" value="@Model.Phone">
+                        <label>Msisdn (phone):</label>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" name="Phone" placeholder="Enter url" value="@Model.Phone">
-                <label>Msisdn (phone):</label>
+            <div class="row mb-2">
+                <div class="col-10">
+                    <label class="form-label">Reason:</label>
+                    <select asp-for="@Model.SelectedReason" asp-items="@Model.Reasons" class="form-control"></select>
+                </div>
+
+                <div class="col-2">
+                    <label class="form-label">State:</label>
+                    <select asp-for="@Model.SelectedState" asp-items="@Model.States" class="form-control" disabled="disabled"></select>
+                </div>
             </div>
-            
-            <div class="mb-3">
-                <label class="form-label">Select state reason:</label>
-                <select asp-for="@Model.SelectedStateReason" asp-items="@Model.StateReasons" class="form-control"></select>
-            </div>
-            
-            <div class="form-floating mb-3">
+
+            <div class="form-floating mb-2">
                 <input type="text" class="form-control" name="url" placeholder="Enter url" value="@Model.Url">
                 <label>Url address</label>
             </div>
 
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button class="btn btn-primary" type="submit">Submit</button>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-check form-switch">
+                        <input type="checkbox" name="TestMode" checked="@Model.TestMode" class="form-check-input" role="switch">
+                        <label class="form-check-label">Display test request</label>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                </div>
             </div>
         </form>
 
+
+        <div class="my-3">
+            <label for="Input" class="form-label">Request:</label>
+            @Html.TextAreaFor(m => m.Input, 9, 40, new { @class = "form-control" })
+        </div>
 
         <div class="my-3">
             <label for="Output" class="form-label">Response:</label>

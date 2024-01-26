@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RuRuServer.Base;
 using RuRuServer.Models;
 using System;
 using System.Diagnostics;
@@ -18,16 +19,21 @@ namespace RuRuServer.Controllers
         {
             DataModel model = new DataModel();
             model.Phone = "9267026528";
-            model.SubscriptionId = random.Next(1000000).ToString();
+            model.SelectedState = 1;
+            model.SelectedReason = 2;
+            model.SubscriptionId = "188143";
+            model.Amount = random.Next(1000);
             return View(model);
         }
 
         [HttpPost]
         public IActionResult Index(DataModel model)
         {
-            var notificationService = new NotificationService();
-            string output = notificationService.CreateNotification(model);
-            model.Output = output;
+            if (!string.IsNullOrEmpty(model.SubscriptionId))
+            {
+                var notificationService = new NotificationService();
+                model = notificationService.Notify(model);
+            }
             return View(model);
         }
 

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using RuRuServer.Base;
 
 namespace RuRuServer.Models
 {
@@ -34,7 +33,7 @@ namespace RuRuServer.Models
 
 
         [JsonProperty("state_updated")]
-        public DateTime StateUpdated { get; set; }
+        public string StateUpdated { get; set; }
 
 
         [JsonProperty("prolongation_number")]
@@ -46,15 +45,15 @@ namespace RuRuServer.Models
 
 
         [JsonProperty("payment_succeeded")]
-        public DateTime PaymentSucceeded { get; set; }
+        public string PaymentSucceeded { get; set; }
 
 
         [JsonProperty("payment_failed")]
-        public DateTime PaymentFailed { get; set; }
+        public string PaymentFailed { get; set; }
 
 
         [JsonProperty("next_payment")]
-        public DateTime NextPayment { get; set; }
+        public string NextPayment { get; set; }
 
 
         [JsonProperty("total_payment_amount")]
