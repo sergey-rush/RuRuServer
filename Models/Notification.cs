@@ -21,7 +21,7 @@ namespace RuRuServer.Models
 
 
         [JsonProperty("user_ids")]
-        public string UserIds { get; set; }
+        public List<KeyValueItem> UserIds { get; set; }
 
 
         [JsonProperty("state")]

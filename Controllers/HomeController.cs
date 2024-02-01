@@ -3,6 +3,7 @@ using RuRuServer.Base;
 using RuRuServer.Models;
 using System;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace RuRuServer.Controllers
 {
@@ -21,8 +22,8 @@ namespace RuRuServer.Controllers
             model.Phone = "9267026528";
             model.SelectedState = 1;
             model.SelectedReason = 2;
-            model.SubscriptionId = "188143";
-            model.Amount = random.Next(1000);
+            model.SubscriptionId = "835956";
+            model.Amount = random.Next(100, 400);
             return View(model);
         }
 
@@ -33,8 +34,35 @@ namespace RuRuServer.Controllers
             {
                 var notificationService = new NotificationService();
                 model = notificationService.Notify(model);
+                if (model.Amount > 0)
+                {
+                    model.Amount *= 2;
+                }
+                else
+                {
+                    model.Amount = random.Next(100, 400);
+                }
             }
+
+            
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Process(DataModel model)
+        {
+            if (model.Input != null)
+            {
+                model.Notification = JsonConvert.DeserializeObject<Notification>(model.Input);
+
+                if (model.Notification != null)
+                {
+                    var notificationService = new NotificationService();
+                    notificationService.Send(model);
+                }
+            }
+
+            return RedirectToAction("Index");
         }
 
         public IActionResult Privacy()

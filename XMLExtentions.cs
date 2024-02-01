@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace RuRuServer
@@ -15,7 +16,20 @@ namespace RuRuServer
                 serializer.Serialize(writer, objectInstance);
             }
 
-            return sb.ToString();
+            
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(sb.ToString());
+
+            foreach (XmlNode node in doc)
+            {
+                if (node.NodeType == XmlNodeType.XmlDeclaration)
+                {
+                    doc.RemoveChild(node);
+                }
+            }
+
+            return doc.InnerXml;
         }
 
         public static T FromXML<T>(this string objectData)

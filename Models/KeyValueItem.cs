@@ -11,14 +11,14 @@ namespace RuRuServer.Models
         /// <summary>
         /// Название параметра
         /// </summary>
-        [JsonProperty("key")]
+        [JsonProperty("Key")]
         [Required]
         public string Key { get; set; }
 
         /// <summary>
         /// Значение параметра
         /// </summary>
-        [JsonProperty("value")]
+        [JsonProperty("Value")]
         [Required]
         public string Value { get; set; }
     }

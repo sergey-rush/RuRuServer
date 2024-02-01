@@ -2,6 +2,8 @@
 using RuRuServer.Base;
 using RuRuServer.Models;
 using System.Reflection;
+using System.Security.Cryptography.Xml;
+using System.Text;
 using System.Transactions;
 
 namespace RuRuServer
@@ -9,6 +11,8 @@ namespace RuRuServer
     public class NotificationService
     {
         private readonly Random random = new Random();
+
+        private readonly string clientSecret = "tllv7WMoguA03a0zi8JE";
 
         private void CreateNotification(DataModel model)
         {
@@ -30,22 +34,42 @@ namespace RuRuServer
                 TotalPaymentAmount = Convert.ToSingle(model.Amount),
                 TransactionId = random.Next(1000000).ToString(),
                 TransactionError = "0",
-                Signature = "yUPIpsAQusBdleRfMSho2Nnt9dsJV/kn6cn6rLpno9I="
+                
             };
             model.Notification.NextPayment = DateTime.Now.AddDays(1).ToString("s");
-            var parameterList = new ParameterList();
-            var parameterItem = new ParameterItem
+
+            model.Notification.UserIds = new List<KeyValueItem>();
+
+            KeyValueItem kvi1 = new KeyValueItem();
+            kvi1.Key = "user_id";
+
+            var parameterList1 = new ParameterList();
+            var parameterItem1 = new ParameterItem
             {
                 Name = "user_id",
                 Value = 112236
             };
-            parameterList.ParameterItems.Add(parameterItem);
-            model.Notification.UserIds = parameterList.ToXML();
+            parameterList1.ParameterItems.Add(parameterItem1);
+            kvi1.Value = parameterList1.ToXML();
+            model.Notification.UserIds.Add(kvi1);
+
+            KeyValueItem kvi2 = new KeyValueItem();
+            kvi2.Key = "account_id";
+
+            var parameterList2 = new ParameterList();
+            var parameterItem2 = new ParameterItem
+            {
+                Name = "account_id",
+                Value = 447292
+            };
+            parameterList2.ParameterItems.Add(parameterItem2);
+            kvi2.Value = parameterList2.ToXML();
+            model.Notification.UserIds.Add(kvi2);
 
             HandleReasonState(model);
             model.SelectedState = model.Notification.State;
             //Task.Run(() => Notify(notification, model.Url));
-
+            model.Notification.Signature = GetSignature(model.Notification);
         }
 
         private DataModel HandleReasonState(DataModel model)
@@ -168,6 +192,36 @@ namespace RuRuServer
             {
                 WebClient wc = new WebClient(model.Url);
                 return wc.ProcessRequest(model);
+            }
+        }
+
+        public DataModel Send(DataModel model)
+        {
+            WebClient wc = new WebClient(model.Url);
+            return wc.ProcessRequest(model);
+        }
+
+        private string GetSignature(Notification notification)
+        {
+            string signature = Sign(GetBytes(clientSecret), GetBytes(GetSignatureMessage(notification)));
+            return signature;
+        }
+
+        private byte[] GetBytes(string input)
+        {
+            return Encoding.UTF8.GetBytes(input);
+        }
+
+        private string GetSignatureMessage(Notification notification)
+        {
+            return $"{notification.Id}{notification.TransactionId}{notification.TotalPaymentAmount}";
+        }
+
+        private string Sign(byte[] key, byte[] data)
+        {
+            using (var signer = new System.Security.Cryptography.HMACSHA1(key))
+            {
+                return Convert.ToBase64String(signer.ComputeHash(data));
             }
         }
     }

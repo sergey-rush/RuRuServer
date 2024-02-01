@@ -1,6 +1,6 @@
 ﻿@model RuRuServer.Models.DataModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Notification service test";
 }
 
 <div class="text-center mb-2">
@@ -17,7 +17,7 @@
             <div class="row mb-2">
                 <div class="col-4">
                     <div class="form-floating">
-                        <input asp-for="@Model.Amount" class="form-control" placeholder="Amount">
+                        <input name="Amount" type="number" value="@Model.Amount" class="form-control" placeholder="Amount">
                         <label>Total payment amount:</label>
                     </div>
                     <small class="form-text text-muted">Общая сумма платежей по подписке</small>
@@ -73,8 +73,14 @@
 
 
         <div class="my-3">
-            <label for="Input" class="form-label">Request:</label>
-            @Html.TextAreaFor(m => m.Input, 9, 40, new { @class = "form-control" })
+            <form method="POST" asp-controller="Home" asp-action="Process">
+                <label for="Input" class="form-label">Request:</label>
+                @Html.TextAreaFor(m => m.Input, 9, 40, new { @class = "form-control mb-2" })
+                <small class="form-text text-muted">Edit request then send to server</small>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button class="btn btn-outline-secondary" type="submit">Send</button>
+                </div>
+            </form>
         </div>
 
         <div class="my-3">
