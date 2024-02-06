@@ -80,12 +80,12 @@ namespace RuRuServer
             {
                 case StateReason.FundsNotWithdrawn:
                     model.Notification.PaymentFailed = DateTime.Now.ToString("s");
-                    model.Notification.TransactionError = random.Next(20).ToString();
+                    model.Notification.TransactionError = "22";
                     model.Notification.UserIds = null;
                     break;
                 case StateReason.NumAttemptExceeded:
                     model.Notification.PaymentFailed = DateTime.Now.ToString("s");
-                    model.Notification.TransactionError = random.Next(20).ToString();
+                    model.Notification.TransactionError = "7";
                     model.Notification.State = 0;
                     break;
                 case StateReason.SubscriptionExpired:
@@ -93,6 +93,7 @@ namespace RuRuServer
                     model.Notification.ProlongationNumber = 0;
                     model.Notification.NextPayment = null;
                     model.Notification.UserIds = null;
+                    model.Notification.TransactionError = "0";
                     break;
                 case StateReason.CanceledByPartner:
                 case StateReason.CanceledByAdmin:
@@ -112,15 +113,16 @@ namespace RuRuServer
                     model.Notification.ProlongationNumber = 0;
                     model.Notification.PaymentSucceeded = null;
                     model.Notification.PaymentFailed = DateTime.Now.ToString("s");
-                    model.Notification.TransactionId = null;
+                    model.Notification.TransactionError = "7";
                     model.Notification.TotalPaymentAmount = 0;
                     break;
                 case StateReason.FatalPaymentError:
                     model.Notification.State = 0;
                     model.Notification.ProlongationNumber = 0;
+                    model.Notification.PaymentNumber = 1;
                     model.Notification.PaymentFailed = DateTime.Now.ToString("s");
                     model.Notification.NextPayment = null;
-                    model.Notification.TransactionError = random.Next(20).ToString();
+                    model.Notification.TransactionError = "2";
                     break;
                 case StateReason.SubscriptionExtended:
                     model.Notification.ProlongationNumber = 0;
@@ -163,7 +165,7 @@ namespace RuRuServer
                     model.Notification.PaymentFailed = DateTime.Now.ToString("s");
                     model.Notification.ProlongationNumber = 1;
                     model.Notification.PaymentNumber = 1;
-                    model.Notification.TransactionError = random.Next(20).ToString();
+                    model.Notification.TransactionError = "7";
                     break;
                 case StateReason.FirstPaymentFailedNoFunds:
                     model.Notification.State = 0;
@@ -172,7 +174,7 @@ namespace RuRuServer
                     model.Notification.TotalPaymentAmount = 0;
                     model.Notification.PaymentSucceeded = null;
                     model.Notification.PaymentFailed = DateTime.Now.ToString("s");
-                    model.Notification.TransactionError = random.Next(20).ToString();
+                    model.Notification.TransactionError = "2";
                     break;
             }
 

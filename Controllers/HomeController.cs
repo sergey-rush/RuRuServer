@@ -58,11 +58,11 @@ namespace RuRuServer.Controllers
                 if (model.Notification != null)
                 {
                     var notificationService = new NotificationService();
-                    notificationService.Send(model);
+                    model = notificationService.Send(model);
                 }
             }
 
-            return RedirectToAction("Index");
+            return View("Index", model);
         }
 
         public IActionResult Privacy()
