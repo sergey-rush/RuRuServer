@@ -65,7 +65,7 @@ namespace RuRuServer.Controllers
             return View("Index", model);
         }
 
-        public IActionResult Privacy()
+        public IActionResult Payment()
         {
             return View();
         }
