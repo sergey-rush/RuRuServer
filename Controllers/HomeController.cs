@@ -70,6 +70,13 @@ namespace RuRuServer.Controllers
             return View();
         }
 
+        public IActionResult Result(bool success)
+        {
+            DataModel model = new DataModel();
+            model.Result = success;
+            return View(model);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

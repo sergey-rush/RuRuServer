@@ -17,6 +17,7 @@ namespace RuRuServer.Models
         public string Output { get; set; }
         public string TestMode { get; set; }
         public Notification Notification { get; set; }
-        
+        public bool Result { get; set; }
+
     }
 }
