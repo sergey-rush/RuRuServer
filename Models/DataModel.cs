@@ -18,6 +18,8 @@ namespace RuRuServer.Models
         public string TestMode { get; set; }
         public Notification Notification { get; set; }
         public bool Result { get; set; }
+        public InitModel InitModel { get; set; }
+        public string CPAReqUrl { get; set; }
 
     }
 }

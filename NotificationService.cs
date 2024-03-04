@@ -192,15 +192,17 @@ namespace RuRuServer
             }
             else
             {
-                WebClient wc = new WebClient(model.Url);
-                return wc.ProcessRequest(model);
+                WebClient wc = new WebClient(model.Url, "application/json");
+                model.Output = wc.ProcessRequest(HttpMethod.Post, model.Input);
+                return model;
             }
         }
 
         public DataModel Send(DataModel model)
         {
-            WebClient wc = new WebClient(model.Url);
-            return wc.ProcessRequest(model);
+            WebClient wc = new WebClient(model.Url, "application/json");
+            model.Output = wc.ProcessRequest(HttpMethod.Post, model.Input);
+            return model;
         }
 
         private string GetSignature(Notification notification)

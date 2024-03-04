@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RuRuServer.Base;
-using RuRuServer.Models;
-using System;
-using System.Diagnostics;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
+using RuRuServer.Models;
+using System.Diagnostics;
 
 namespace RuRuServer.Controllers
 {
@@ -65,9 +64,43 @@ namespace RuRuServer.Controllers
             return View("Index", model);
         }
 
+        [HttpGet]
         public IActionResult Payment()
         {
-            return View();
+            var nvc = QueryHelpers.ParseQuery(Request.QueryString.Value).ToDictionary(m => m.Key, m => m.Value.ToString());
+            string requestJson = JsonConvert.SerializeObject(nvc);
+            InitModel initModel = JsonConvert.DeserializeObject<InitModel>(requestJson);
+            DataModel dataModel = new DataModel();
+            dataModel.InitModel = initModel;
+            dataModel.CPAReqUrl = CreateCPAReqUrl(dataModel.InitModel);
+            return View(dataModel);
+        }
+
+        [HttpPost]
+        public IActionResult Payment(DataModel dataModel)
+        {
+            dataModel.CPAReqUrl = CreateCPAReqUrl(dataModel.InitModel);
+            WebClient wc = new WebClient(dataModel.CPAReqUrl, "application/xml");
+            dataModel.Output = wc.ProcessRequest(HttpMethod.Get, null);
+            return View(dataModel);
+        }
+
+        private string CreateCPAReqUrl(InitModel model)
+        {
+            string url = "http://pay-dev.digitalspb.com:9304/Card/Gazprombank/[[Type]]/callback?merch_id=[[MerchantId]]&trx_id=[[TransactionId]]&o.order_id=[[InvoiceId]]&lang_code=[[LangCode]]&ts=[[TimeStamp]]";
+            url = url.Replace("[[Type]]", "cpareq").Replace("[[InvoiceId]]", model.InvoiceId).Replace("[[MerchantId]]", model.MerchantId);
+            string transactionId = Guid.NewGuid().ToString("N");
+            string timeStamp = DateTimeOffset.Now.ToString("yyyyMMdd HH:mm:ss");
+            url = url.Replace("[[TransactionId]]", transactionId).Replace("[[LangCode]]", model.LangCode).Replace("[[TimeStamp]]", timeStamp);
+            return url;
+        }
+
+        public IActionResult Checkout()
+        {
+            var nvc = QueryHelpers.ParseQuery(Request.QueryString.Value).ToDictionary(m => m.Key, m => m.Value.ToString());
+            string requestJson = JsonConvert.SerializeObject(nvc);
+            InitModel model = JsonConvert.DeserializeObject<InitModel>(requestJson);
+            return View(model);
         }
 
         public IActionResult Result(bool success)
