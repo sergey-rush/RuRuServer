@@ -26,4 +26,19 @@ public class InitModel
     [JsonProperty("back_url_f")]
     public string FailureUrl { get; set; }
 
+    [JsonProperty("trx_id")]
+    public string TransactionId { get; set; }
+
+    [JsonProperty("merchant_trx")]
+    public string PaymentId { get; set; }
+
+    [JsonProperty("result_code")] 
+    public string ResultCode { get; set; } = "1";
+
+    [JsonProperty("amount")]
+    public long Amount { get; set; }
+
+    [JsonProperty("p.rrn")]
+    public string AcquiringId { get; set; }
+
 }

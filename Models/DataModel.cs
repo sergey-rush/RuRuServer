@@ -19,7 +19,5 @@ namespace RuRuServer.Models
         public Notification Notification { get; set; }
         public bool Result { get; set; }
         public InitModel InitModel { get; set; }
-        public string CPAReqUrl { get; set; }
-
     }
 }

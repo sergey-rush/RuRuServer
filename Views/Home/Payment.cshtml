@@ -4,13 +4,11 @@
 }
 
 <div class="text-center mb-2">
-    <h1 class="display-6">CheckPaymentAvailRequest (CPAReq) </h1>
+    <h1 class="display-6">1. CheckPaymentAvailRequest (CPAReq) </h1>
 </div>
 
 <form asp-action="Payment" method="post">
     <div class="row">
-
-       
 
         <div class="col-12">
 
@@ -55,10 +53,14 @@
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                         <div class="fw-bold">Callback Url</div>
-                        @Model.CPAReqUrl
+                        @Model.Url
+                        <input id="Url" asp-for="Url" type="hidden" value="@Model.Url" />
                     </div>
                 </li>
             </ul>
+            <input id="TransactionId" asp-for="InitModel.TransactionId" type="hidden" value="@Model.InitModel.TransactionId" />
+            <input id="PaymentId" asp-for="InitModel.PaymentId" type="hidden" value="@Model.InitModel.PaymentId" />
+            <input id="Amount" asp-for="InitModel.Amount" type="hidden" value="@Model.InitModel.Amount" />
             <button class="my-2 btn btn-dark" type="submit">Proceed CPAReq</button>
         </div>
     </div>
@@ -69,6 +71,6 @@
     <textarea name="@Model.Output" type="text" class="form-control" rows="5">@Model.Output</textarea>
 
     <div class="my-1">
-        <a asp-controller="Home" asp-action="Checkout" asp-route-merch_id="@Model.InitModel.MerchantId" asp-route-o.order_id="@Model.InitModel.InvoiceId" class="link-success">Checkout</a>
+        <a asp-controller="Home" asp-action="Checkout" asp-route-merch_id="@Model.InitModel.MerchantId" asp-route-o.order_id="@Model.InitModel.InvoiceId" asp-route-trx_id="@Model.InitModel.TransactionId" asp-route-merchant_trx="@Model.InitModel.PaymentId" asp-route-amount="@Model.InitModel.Amount" class="link-success">Checkout</a>
     </div>
 </div>
