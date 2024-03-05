@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
+using RuRuServer.Extensions;
 using RuRuServer.Models;
 using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Cryptography.Xml;
 
 namespace RuRuServer.Controllers
 {
@@ -53,12 +51,13 @@ namespace RuRuServer.Controllers
         [HttpPost]
         public IActionResult Process(DataModel model)
         {
-            if (model.Input != null)
+            if (string.IsNullOrEmpty(model.Input))
             {
-                model.Notification = JsonConvert.DeserializeObject<Notification>(model.Input);
+                Notification? notification = model.Input.FromJson<Notification>()!;
 
-                if (model.Notification != null)
+                if (notification != null)
                 {
+                    model.Notification = notification;
                     var notificationService = new NotificationService();
                     model = notificationService.Send(model);
                 }
@@ -70,11 +69,14 @@ namespace RuRuServer.Controllers
         [HttpGet]
         public IActionResult Payment()
         {
-            var nvc = QueryHelpers.ParseQuery(Request.QueryString.Value).ToDictionary(m => m.Key, m => m.Value.ToString());
-            string requestJson = JsonConvert.SerializeObject(nvc);
-            InitModel initModel = JsonConvert.DeserializeObject<InitModel>(requestJson);
             DataModel dataModel = new DataModel();
-            dataModel.InitModel = initModel;
+            var nvc = QueryHelpers.ParseQuery(Request.QueryString.Value).ToDictionary(m => m.Key, m => m.Value.ToString());
+            string requestJson = nvc.ToJson();
+            InitModel? initModel = requestJson.FromJson<InitModel>();
+            if (initModel != null)
+            {
+                dataModel.InitModel = initModel;
+            }
             dataModel.Url = CreateCPAReqUrl(dataModel.InitModel);
             return View(dataModel);
         }
@@ -84,9 +86,13 @@ namespace RuRuServer.Controllers
         {
             WebClient wc = new WebClient(dataModel.Url, "application/xml");
             dataModel.Output = wc.ProcessRequest(HttpMethod.Get, null);
-            PaymentAvailResponse response = dataModel.Output.FromXML<PaymentAvailResponse>();
-            dataModel.InitModel.Amount = response.Purchase.AccountAmount.Amount;
-            dataModel.InitModel.PaymentId = response.PaymentId;
+            PaymentAvailResponse? response = dataModel.Output.FromXML<PaymentAvailResponse>();
+            if (response != null)
+            {
+                dataModel.InitModel.Amount = response.Purchase.AccountAmount.Amount;
+                dataModel.InitModel.PaymentId = response.PaymentId;
+            }
+            
             return View(dataModel);
         }
 
@@ -106,19 +112,24 @@ namespace RuRuServer.Controllers
         public IActionResult Checkout()
         {
             var nvc = QueryHelpers.ParseQuery(Request.QueryString.Value).ToDictionary(m => m.Key, m => m.Value.ToString());
-            string requestJson = JsonConvert.SerializeObject(nvc);
-            InitModel model = JsonConvert.DeserializeObject<InitModel>(requestJson);
-            return View(model);
+            string requestJson = nvc.ToJson();
+            InitModel? initModel = requestJson.FromJson<InitModel>();
+            return View(initModel);
         }
 
         public IActionResult Register()
         {
-            var nvc = QueryHelpers.ParseQuery(Request.QueryString.Value).ToDictionary(m => m.Key, m => m.Value.ToString());
-            string requestJson = JsonConvert.SerializeObject(nvc);
-            InitModel initModel = JsonConvert.DeserializeObject<InitModel>(requestJson);
             DataModel dataModel = new DataModel();
-            dataModel.InitModel = initModel;
-            dataModel.Url = CreateRPReqUrl(dataModel.InitModel);
+            var nvc = QueryHelpers.ParseQuery(Request.QueryString.Value).ToDictionary(m => m.Key, m => m.Value.ToString());
+            string requestJson = nvc.ToJson();
+            InitModel? initModel = requestJson.FromJson<InitModel>();
+
+            if (initModel != null)
+            {
+                dataModel.InitModel = initModel;
+                dataModel.Url = CreateRPReqUrl(dataModel.InitModel);
+            }
+            
             return View(dataModel);
         }
 
@@ -127,7 +138,7 @@ namespace RuRuServer.Controllers
         /// </summary>
         private string CreateRPReqUrl(InitModel model)
         {
-            string url = "http://pay-dev.digitalspb.com:9304/Card/Gazprombank/[[Type]]/callback?trx_id=[[TransactionId]]&merch_id=[[MerchantId]]&merchant_trx=[[PaymentId]]&result_code=[[ResultCode]]&amount=[[Amount]]&o.order_id=[[InvoiceId]]&p.rrn=[[AcquiringId]]&p.authcode=AB2F23&p.maskedPan=545454xxxxxx5454&p.isFullyAuthenticated=Y&p.transmissionDateTime=[[TransmissionDateTime]]&ts=[[TimeStamp]]&signature=[[Signature]]";
+            string url = "http://pay-dev.digitalspb.com:9304/Card/Gazprombank/[[Type]]/callback?trx_id=[[TransactionId]]&merch_id=[[MerchantId]]&merchant_trx=[[PaymentId]]&result_code=[[ResultCode]]&amount=[[Amount]]&o.order_id=[[InvoiceId]]&p.rrn=[[AcquiringId]]&p.authcode=AB2F23&p.maskedPan=545454xxxxxx5454&p.isFullyAuthenticated=Y&p.transmissionDateTime=[[TransmissionDateTime]]&ts=[[TimeStamp]]";
             url = url.Replace("[[Type]]", "rpreq");
             url = url.Replace("[[TransactionId]]", model.TransactionId);
             url = url.Replace("[[MerchantId]]", model.MerchantId);
@@ -139,7 +150,9 @@ namespace RuRuServer.Controllers
             url = url.Replace("[[TransmissionDateTime]]", DateTimeOffset.Now.AddSeconds(-5).ToString("yyyyMMdd HH:mm:ss"));
             url = url.Replace("[[TimeStamp]]", DateTimeOffset.Now.ToString("yyyyMMdd HH:mm:ss"));
             url = url.Replace("[[Signature]]", "Signature");
-
+            string signedUrl = $"&signature={url.Sign()}";
+            Console.WriteLine($"Signed Url: {signedUrl}");
+            url += signedUrl;
             return url;
         }
 
@@ -153,27 +166,11 @@ namespace RuRuServer.Controllers
 
         public IActionResult Result(bool success)
         {
-            DataModel model = new DataModel();
-            model.Result = success;
-            return View(model);
-        }
-
-        public static byte[] Sign(string text, string certSubject)
-        {
-            string certPath = "C:\\Certs\\digitalspb\\digitalspb.pfx";
-            X509Certificate2 certificate = new X509Certificate2(certPath);
-            RSACryptoServiceProvider provider = (RSACryptoServiceProvider)certificate.PublicKey.Key;
-            var hash = HashText(text);
-            var signature = provider.SignHash(hash, CryptoConfig.MapNameToOID("SHA1"));
-            return signature;
-        }
-
-        private static byte[] HashText(string text)
-        {
-            using (var sha1 = new SHA1Managed())
+            DataModel model = new DataModel
             {
-                return sha1.ComputeHash(Encoding.UTF8.GetBytes(text));
-            }
+                Result = success
+            };
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

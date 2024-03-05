@@ -1,42 +1,49 @@
-﻿using System.Text;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Serialization;
 
-namespace RuRuServer
+namespace RuRuServer;
+public static class XMLExtensions
 {
-    public static class XMLExtensions
+    public static string ToXML<T>(this T value)
     {
-        public static string ToXML<T>(this T objectInstance)
+        if (value == null)
         {
-            var serializer = new XmlSerializer(typeof(T));
-            var sb = new StringBuilder();
+            return string.Empty;
+        }
+        try
+        {
+            var xmlSerializer = new XmlSerializer(typeof(T));
+            var stringWriter = new StringWriter();
+            using var writer = XmlWriter.Create(stringWriter);
+            xmlSerializer.Serialize(writer, value);
+            return stringWriter.ToString();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred ToXML: {ex.Message}");
+        }
+        return string.Empty;
+    }
 
-            using (TextWriter writer = new StringWriter(sb))
-            {
-                serializer.Serialize(writer, objectInstance);
-            }
-
-            
-
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(sb.ToString());
-
-            foreach (XmlNode node in doc)
-            {
-                if (node.NodeType == XmlNodeType.XmlDeclaration)
-                {
-                    doc.RemoveChild(node);
-                }
-            }
-
-            return doc.InnerXml;
+    public static T? FromXML<T>(this string value)
+    {
+        T? output = default(T);
+        if (string.IsNullOrEmpty(value))
+        {
+            return output;
         }
 
-        public static T FromXML<T>(this string objectData)
+        
+        try
         {
-            var serializer = new XmlSerializer(typeof(T));
-            using TextReader reader = new StringReader(objectData);
-            return (T)serializer.Deserialize(reader);
+            var xmlSerializer = new XmlSerializer(typeof(T));
+            output = (T?)xmlSerializer.Deserialize(new StringReader(value));
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred FromXML: {ex.Message}");
+        }
+
+        return output;
     }
 }

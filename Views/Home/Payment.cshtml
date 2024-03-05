@@ -23,7 +23,7 @@
                 </li>
 
                 <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
+                    <div class="ms-2 me-auto text-break">
                         <div class="fw-bold">InvoiceId</div>
                         @Model.InitModel.InvoiceId
                         <input id="InvoiceId" asp-for="InitModel.InvoiceId" type="hidden" value="@Model.InitModel.InvoiceId" />
@@ -37,7 +37,7 @@
                     </div>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
+                    <div class="ms-2 me-auto text-break">
                         <div class="fw-bold">Failure Url</div>
                         @Model.InitModel.FailureUrl
                         <input id="FailureUrl" asp-for="InitModel.FailureUrl" type="hidden" value="@Model.InitModel.FailureUrl" />
@@ -51,7 +51,7 @@
                     </div>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
+                    <div class="ms-2 me-auto text-break">
                         <div class="fw-bold">Callback Url</div>
                         @Model.Url
                         <input id="Url" asp-for="Url" type="hidden" value="@Model.Url" />
@@ -71,6 +71,6 @@
     <textarea name="@Model.Output" type="text" class="form-control" rows="5">@Model.Output</textarea>
 
     <div class="my-1">
-        <a asp-controller="Home" asp-action="Checkout" asp-route-merch_id="@Model.InitModel.MerchantId" asp-route-o.order_id="@Model.InitModel.InvoiceId" asp-route-trx_id="@Model.InitModel.TransactionId" asp-route-merchant_trx="@Model.InitModel.PaymentId" asp-route-amount="@Model.InitModel.Amount" class="link-success">Checkout</a>
+        <a asp-controller="Home" asp-action="Checkout" asp-route-merch_id="@Model.InitModel.MerchantId" asp-route-o.order_id="@Model.InitModel.InvoiceId" asp-route-trx_id="@Model.InitModel.TransactionId" asp-route-merchant_trx="@Model.InitModel.PaymentId" asp-route-amount="@Model.InitModel.Amount" class="btn btn-danger">Checkout</a>
     </div>
 </div>
