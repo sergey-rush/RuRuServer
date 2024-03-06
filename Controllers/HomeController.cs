@@ -4,6 +4,7 @@ using RuRuServer.Extensions;
 using RuRuServer.Models;
 using System.Diagnostics;
 using System.Security.Cryptography.Xml;
+using System.Web;
 
 namespace RuRuServer.Controllers
 {
@@ -92,7 +93,7 @@ namespace RuRuServer.Controllers
                 dataModel.InitModel.Amount = response.Purchase.AccountAmount.Amount;
                 dataModel.InitModel.PaymentId = response.PaymentId;
             }
-            
+
             return View(dataModel);
         }
 
@@ -129,7 +130,7 @@ namespace RuRuServer.Controllers
                 dataModel.InitModel = initModel;
                 dataModel.Url = CreateRPReqUrl(dataModel.InitModel);
             }
-            
+
             return View(dataModel);
         }
 
@@ -150,10 +151,23 @@ namespace RuRuServer.Controllers
             url = url.Replace("[[TransmissionDateTime]]", DateTimeOffset.Now.AddSeconds(-5).ToString("yyyyMMdd HH:mm:ss"));
             url = url.Replace("[[TimeStamp]]", DateTimeOffset.Now.ToString("yyyyMMdd HH:mm:ss"));
             url = url.Replace("[[Signature]]", "Signature");
-            string signedUrl = $"&signature={url.Sign()}";
-            Console.WriteLine($"Signed Url: {signedUrl}");
-            url += signedUrl;
-            return url;
+
+            Console.WriteLine(" ");
+            byte[] signatureBytes = url.Sign();
+            string signatureBase = Convert.ToBase64String(signatureBytes);
+            Console.WriteLine($"SignatureBase64: {signatureBase}");
+            Console.WriteLine(" ");
+            var signature = Base64UrlTextEncoder.Encode(signatureBytes);
+            Console.WriteLine($"SignatureBase64UrlTextEncoder: {signature}");
+
+            // replace URL unsafe characters with safe ones
+            //return signature.Replace('+', '-').Replace('/', '_').Replace("=", ",");
+
+            
+            //Console.WriteLine($"Signature: {signature}");
+            //signature = HttpUtility.UrlEncode(signature);
+            string signedUrl = $"{url}&signature={signature}";
+            return signedUrl;
         }
 
         [HttpPost]
